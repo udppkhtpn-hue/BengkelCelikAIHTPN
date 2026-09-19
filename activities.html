@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Classroom Activities — NotebookLM Ethics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kalam:wght@300;400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --board: #2b3d34; --board-2: #24352d; --frame: #6b4a2b; --frame-dark: #4d3419;
+    --chalk: #f4f1e8; --chalk-dim: rgba(244,241,232,0.62);
+    --green: #a8e6a1; --yellow: #f5d76e; --red: #f0908a; --blue: #9fd3e8; --purple: #c9a8e6; --amber: #e6b45a;
+    --font-head: 'Bebas Neue', sans-serif; --font-chalk: 'Kalam', cursive; --font-body: 'DM Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100%; }
+  body {
+    font-family: var(--font-body);
+    background: radial-gradient(circle at 20% 30%, #1c1a17 0%, #100f0d 60%, #0a0908 100%);
+    color: var(--chalk); display: flex; justify-content: center; align-items: flex-start;
+    padding: 24px 16px 60px; min-height: 100svh;
+  }
+  .board-wrap {
+    width: 100%; max-width: 860px;
+    background: linear-gradient(145deg, var(--frame), var(--frame-dark));
+    padding: 16px; border-radius: 10px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(0,0,0,0.25);
+  }
+  .board {
+    position: relative;
+    background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.04), transparent 60%), linear-gradient(160deg, var(--board), var(--board-2));
+    border-radius: 6px; padding: 34px 26px 40px; min-height: 400px;
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(0,0,0,0.4); overflow: hidden;
+  }
+  .board::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 200px 60px at 70% 12%, rgba(255,255,255,0.035), transparent 70%), radial-gradient(ellipse 260px 70px at 20% 85%, rgba(255,255,255,0.03), transparent 70%);
+  }
+  .board > * { position: relative; z-index: 1; }
+
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px; }
+  .eyebrow { font-family: var(--font-chalk); font-size: 0.95rem; color: var(--chalk-dim); }
+  h1 { font-family: var(--font-head); font-size: clamp(2rem, 6.5vw, 3.2rem); line-height: 0.95; letter-spacing: 0.02em; text-shadow: 0 0 1px rgba(255,255,255,0.4); }
+  h1 .accent { color: var(--yellow); }
+  .lang-toggle { display: flex; border: 1.5px solid var(--chalk-dim); border-radius: 20px; overflow: hidden; flex-shrink: 0; }
+  .lang-toggle button { background: transparent; border: none; color: var(--chalk-dim); font-family: var(--font-chalk); font-size: 0.85rem; font-weight: 700; padding: 5px 12px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .lang-toggle button.active { background: var(--chalk); color: var(--board); }
+  .nav-link { font-family: var(--font-chalk); font-size: 0.95rem; color: var(--yellow); text-decoration: none; border-bottom: 1px dashed var(--yellow); }
+  .nav-link:hover { color: var(--chalk); border-color: var(--chalk); }
+  .lede { font-family: var(--font-chalk); font-size: 1.08rem; line-height: 1.6; margin: 14px 0 20px; max-width: 64ch; }
+
+  /* Activity tabs */
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .tab { font-family: var(--font-head); font-size: 1.05rem; letter-spacing: 0.04em; padding: 8px 16px; border: 2px solid var(--chalk-dim); border-radius: 8px; background: transparent; color: var(--chalk-dim); cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.05; }
+  .tab small { display: block; font-family: var(--font-chalk); font-size: 0.72rem; letter-spacing: 0; opacity: 0.8; }
+  .tab:hover { color: var(--chalk); border-color: var(--chalk); }
+  .tab.active { background: var(--accent, var(--chalk)); color: var(--board); border-color: var(--accent, var(--chalk)); }
+
+  .activity-head { margin: 20px 0 6px; }
+  .activity-tag { font-family: var(--font-head); font-size: 0.85rem; letter-spacing: 0.08em; color: var(--accent, var(--chalk)); text-transform: uppercase; }
+  .activity-title { font-family: var(--font-chalk); font-weight: 700; font-size: 1.5rem; line-height: 1.2; }
+  .activity-meta { font-family: var(--font-chalk); font-size: 0.92rem; color: var(--chalk-dim); margin-top: 3px; }
+
+  /* Progress dots */
+  .dots { display: flex; gap: 6px; margin: 14px 0 18px; align-items: center; }
+  .dot { width: 26px; height: 6px; border-radius: 4px; background: rgba(255,255,255,0.12); transition: background 0.3s; }
+  .dot.done { background: var(--accent, var(--green)); }
+
+  /* Steps */
+  .steps { display: grid; gap: 14px; }
+  .step { border: 1px solid rgba(255,255,255,0.14); border-left: 4px solid var(--accent, var(--chalk)); border-radius: 8px; background: rgba(255,255,255,0.02); padding: 16px 18px; animation: fadeUp 0.4s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .step-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+  .step-n { font-family: var(--font-head); font-size: 1.15rem; letter-spacing: 0.05em; color: var(--accent, var(--chalk)); }
+  .step-title { font-family: var(--font-chalk); font-weight: 700; font-size: 1.18rem; color: var(--chalk); }
+  .step-time { font-family: var(--font-chalk); font-size: 0.82rem; color: var(--chalk-dim); margin-left: auto; }
+  .step-body { font-family: var(--font-chalk); font-size: 1.03rem; line-height: 1.55; color: var(--chalk); }
+  .step-body p { margin-bottom: 8px; }
+  .step-body ul { margin: 6px 0 8px 4px; list-style: none; display: grid; gap: 5px; }
+  .step-body ul li { display: flex; gap: 8px; }
+  .step-body ul li::before { content: '›'; color: var(--accent, var(--yellow)); }
+
+  /* permitted / prohibited chips */
+  .use-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+  @media (max-width: 560px) { .use-cols { grid-template-columns: 1fr; } }
+  .use-col h4 { font-family: var(--font-head); font-size: 0.95rem; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .use-col.ok h4 { color: var(--green); } .use-col.no h4 { color: var(--red); }
+  .use-col ul { list-style: none; display: grid; gap: 5px; margin: 0; }
+  .use-col li { font-family: var(--font-chalk); font-size: 0.95rem; line-height: 1.35; display: flex; gap: 8px; }
+  .use-col li::before { content: ''; }
+  .use-col.ok li::before { content: '✓'; color: var(--green); font-weight: 700; }
+  .use-col.no li::before { content: '✗'; color: var(--red); font-weight: 700; }
+
+  /* stimulus card */
+  .stim { margin-top: 12px; border: 2px dashed var(--yellow); border-radius: 8px; padding: 14px 16px; background: rgba(245,215,110,0.05); }
+  .stim-label { font-family: var(--font-head); font-size: 0.85rem; letter-spacing: 0.08em; color: var(--yellow); margin-bottom: 8px; }
+  .stim h5 { font-family: var(--font-chalk); font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; color: var(--chalk); }
+  .stim p, .stim li { font-family: var(--font-chalk); font-size: 1rem; line-height: 1.5; color: var(--chalk); }
+  .claim-list { list-style: none; display: grid; gap: 7px; counter-reset: c; }
+  .claim-list li { display: flex; gap: 10px; }
+  .claim-list li::before { counter-increment: c; content: counter(c); font-family: var(--font-head); color: var(--yellow); min-width: 18px; }
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-family: var(--font-body); font-size: 0.95rem; }
+  .data-table th, .data-table td { border: 1px solid rgba(255,255,255,0.25); padding: 6px 10px; text-align: left; color: var(--chalk); }
+  .data-table th { font-family: var(--font-head); letter-spacing: 0.03em; color: var(--yellow); font-weight: 400; }
+
+  /* declaration */
+  .declare-box { margin-top: 12px; border: 1px dashed var(--yellow); border-radius: 6px; padding: 10px 14px; background: rgba(245,215,110,0.05); }
+  .declare-box .stim-label { color: var(--yellow); }
+  .declare-box p { font-family: var(--font-chalk); font-style: italic; font-size: 1rem; color: var(--chalk); }
+
+  /* reveal button */
+  .reveal-btn { font-family: var(--font-head); letter-spacing: 0.04em; font-size: 1.2rem; padding: 12px 26px; margin-top: 16px; width: 100%; background: transparent; color: var(--chalk); border: 2.5px solid var(--accent, var(--chalk)); border-radius: 8px; cursor: pointer; transition: background 0.2s, color 0.2s, transform 0.15s; }
+  .reveal-btn:hover { background: var(--accent, var(--chalk)); color: var(--board); transform: translateY(-2px); }
+  .reveal-btn small { display: block; font-family: var(--font-chalk); font-size: 0.72rem; letter-spacing: 0; opacity: 0.85; text-transform: none; }
+
+  /* teacher pack */
+  .teacher { margin-top: 18px; border: 2px solid var(--blue); border-radius: 8px; overflow: hidden; }
+  .teacher > summary { list-style: none; cursor: pointer; padding: 14px 18px; font-family: var(--font-head); font-size: 1.15rem; letter-spacing: 0.04em; color: var(--blue); background: rgba(159,211,232,0.06); display: flex; align-items: center; gap: 10px; }
+  .teacher > summary::-webkit-details-marker { display: none; }
+  .teacher > summary small { font-family: var(--font-chalk); font-size: 0.78rem; letter-spacing: 0; color: var(--chalk-dim); margin-left: auto; text-transform: none; }
+  .teacher[open] > summary { border-bottom: 1px solid rgba(159,211,232,0.3); }
+  .teacher-body { padding: 16px 18px; }
+  .tp-field { margin-bottom: 14px; }
+  .tp-label { font-family: var(--font-head); font-size: 0.9rem; letter-spacing: 0.06em; color: var(--blue); margin-bottom: 5px; }
+  .tp-field, .tp-field p, .tp-field li { font-family: var(--font-chalk); font-size: 1rem; line-height: 1.5; color: var(--chalk); }
+  .tp-field ul { list-style: none; display: grid; gap: 5px; margin-left: 2px; }
+  .tp-field ul li { display: flex; gap: 8px; } .tp-field ul li::before { content: '—'; color: var(--blue); }
+  .answer { color: var(--green); font-weight: 700; }
+
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+  .tool-btn { font-family: var(--font-head); letter-spacing: 0.04em; font-size: 1rem; padding: 8px 18px; background: transparent; color: var(--chalk); border: 2px solid var(--chalk-dim); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+  .tool-btn:hover { border-color: var(--chalk); background: var(--chalk); color: var(--board); }
+
+  .footer-note { margin-top: 22px; text-align: center; font-family: var(--font-chalk); font-size: 0.8rem; color: rgba(244,241,232,0.35); }
+  .hidden { display: none !important; }
+
+  @media (max-width: 480px) { .board { padding: 26px 18px 32px; } .tab { flex: 1 1 44%; } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  @media print {
+    body { background: #fff; color: #111; padding: 0; }
+    .board-wrap, .board { background: #fff; box-shadow: none; }
+    .board::before, .lang-toggle, .tabs, .reveal-btn, .toolbar, .nav-link, .dots { display: none !important; }
+    .step, .teacher, .teacher-body { display: block !important; }
+    h1, .activity-title, .step-title, .step-n, .stim h5, .tp-label, .use-col h4, .activity-tag { color: #111 !important; }
+    .step-body, .stim p, .stim li, .tp-field, .lede { color: #222 !important; }
+    .step { break-inside: avoid; border-color: #999; }
+  }
+</style>
+</head>
+<body>
+  <div class="board-wrap">
+    <div class="board">
+      <div class="top">
+        <div>
+          <div class="eyebrow">Bengkel Celik AI HTPN · NotebookLM</div>
+          <h1><span data-en="Classroom" data-bm="Aktiviti">Classroom</span> <span class="accent" data-en="Activities" data-bm="Bilik Darjah">Activities</span></h1>
+        </div>
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+          <button id="btn-bm" onclick="setLang('bm')">BM</button>
+        </div>
+      </div>
+      <a class="nav-link" href="index.html" data-en="← Protocol Quiz" data-bm="← Kuiz Protokol">← Protocol Quiz</a>
+
+      <p class="lede"
+         data-en="Four ready-to-run lessons — one per subject, each about 40 minutes, each built on a real textbook chapter. Pick a subject, then reveal the lesson one section at a time."
+         data-bm="Empat pelajaran sedia guna — satu bagi setiap subjek, setiap satu kira-kira 40 minit, setiap satu dibina atas bab buku teks sebenar. Pilih subjek, kemudian dedahkan pelajaran satu bahagian pada satu masa.">
+        Four ready-to-run lessons — one per subject.
+      </p>
+
+      <div class="tabs" id="tabs"></div>
+
+      <div class="activity-head">
+        <div class="activity-tag" id="a-tag"></div>
+        <div class="activity-title" id="a-title"></div>
+        <div class="activity-meta" id="a-meta"></div>
+      </div>
+
+      <div class="dots" id="dots"></div>
+      <div class="steps" id="steps"></div>
+      <button class="reveal-btn" id="reveal" onclick="revealNext()"></button>
+
+      
+
+      <div class="toolbar">
+        <button class="tool-btn" onclick="printPack()" data-en="⎙ Print this lesson" data-bm="⎙ Cetak pelajaran ini">⎙ Print this lesson</button>
+      </div>
+
+      <div class="footer-note" data-en="Use AI to understand a source — never to produce the work being measured."
+           data-bm="Gunakan AI untuk memahami sumber — bukan untuk menghasilkan kerja yang dinilai.">
+        Use AI to understand a source — never to produce the work being measured.
+      </div>
+    </div>
+  </div>
+
+<script>
+  const T = {
+    setup:{en:'Setup',bm:'Persediaan'},
+    useAI:{en:'Use the notebook — the right way',bm:'Guna notebook — dengan cara yang betul'},
+    material:{en:'The material',bm:'Bahan'},
+    think:{en:'The thinking task',bm:'Tugas pemikiran'},
+    handin:{en:'Declare & hand in',bm:'Isytihar & serah'},
+    okH:{en:'NotebookLM may',bm:'NotebookLM boleh'},
+    noH:{en:'NotebookLM may not',bm:'NotebookLM tidak boleh'},
+    reveal:{en:'Reveal next section',bm:'Dedah bahagian seterusnya'},
+    done:{en:'That is the whole lesson — hand in your work.',bm:'Itu keseluruhan pelajaran — serahkan kerja anda.'},
+    stimulus:{en:'Read this',bm:'Baca ini'},
+    declaration:{en:'Declaration (write by hand)',bm:'Isytihar (tulis tangan)'},
+    modes:{en:'Both classroom modes',bm:'Dua mod bilik darjah'},
+    key:{en:'Answer key',bm:'Skema jawapan'},
+    marking:{en:'Marking',bm:'Pemarkahan'},
+    master:{en:'Stimulus master',bm:'Bahan induk'}
+  };
+
+  const ACT = [
+    /* ===================== SEJARAH ===================== */
+    {
+      key:'sejarah', accent:'var(--amber)',
+      tab:{en:'Sejarah',bm:'Sejarah'}, tabSub:{en:'Ting. 3 · Bab 1',bm:'Ting. 3 · Bab 1'},
+      tag:{en:'Sejarah Tingkatan 3 · Bab 1 (ms 10–11)',bm:'Sejarah Tingkatan 3 · Bab 1 (ms 10–11)'},
+      title:{en:'Spot the Planted Error',bm:'Kesan Ralat yang Ditanam'},
+      meta:{en:'≈40 min · verify AI output against the source',bm:'≈40 min · sahkan output AI dengan sumber'},
+      steps:[
+        { kind:'setup', time:'5 min',
+          body:{en:"Today you test whether an AI summary can be trusted. NotebookLM is grounded in your textbook and is usually accurate — so accuracy is not the game. Your teacher will give you a summary of section 1.2, <i>Faktor Kedatangan Kuasa Barat</i>. It looks correct, but one sentence has been changed to be wrong. Find it, and prove it with the textbook.",
+                 bm:"Hari ini anda menguji sama ada ringkasan AI boleh dipercayai. NotebookLM terikat pada buku teks anda dan biasanya tepat — jadi ketepatan bukan permainannya. Guru anda akan memberi ringkasan bahagian 1.2, <i>Faktor Kedatangan Kuasa Barat</i>. Ia kelihatan betul, tetapi satu ayat telah diubah menjadi salah. Cari ayat itu, dan buktikan dengan buku teks."} },
+        { kind:'useAI', time:'10 min',
+          body:{en:"Open Bab 1 in your notebook (or watch it on the class screen). Generate a summary of section 1.2 and ask it two of your own practice questions. Click a citation and land on the textbook page. Notice how accurate it is — this is the honest, useful side of the tool.",
+                bm:"Buka Bab 1 dalam notebook anda (atau tonton pada skrin kelas). Jana ringkasan bahagian 1.2 dan tanya dua soalan latihan anda sendiri. Klik satu petikan dan tiba di muka surat buku teks. Perhatikan betapa tepatnya — inilah sisi jujur dan berguna alat ini."},
+          ok:{en:["Generate a summary of the chapter","Ask practice questions and check the cited page"],bm:["Jana ringkasan bab","Tanya soalan latihan dan semak muka surat yang dipetik"]},
+          no:{en:["Ask the notebook 'which sentence is wrong' — that is your job"],bm:["Tanya notebook 'ayat mana yang salah' — itu tugas anda"]} },
+        { kind:'material', time:'2 min',
+          body:{en:"Here is the summary your teacher hands out. Five claims — one is false.",bm:"Inilah ringkasan yang diedar guru anda. Lima dakwaan — satu adalah palsu."},
+          stim:{ h:{en:"Summary: Why the Western powers came (Bab 1.2)",bm:"Ringkasan: Mengapa kuasa Barat datang (Bab 1.2)"},
+                 claims:{en:[
+                   "The English East India Company (SHTI) was founded in 1600 in England and given a spice-trade monopoly in the Malay Archipelago.",
+                   "The Dutch East India Company was founded in 1602.",
+                   "The French East India Company was founded in 1664 to trade in Africa.",
+                   "The Western powers were drawn by the region's wealth and sought spices, gold, silver, gems and forest products.",
+                   "The goals of their colonisation were wealth, religion and fame (gold, God and glory)."
+                 ], bm:[
+                   "Syarikat Hindia Timur Inggeris (SHTI) ditubuhkan pada tahun 1600 di England dan diberi monopoli perdagangan rempah di Kepulauan Melayu.",
+                   "Syarikat Hindia Timur Belanda ditubuhkan pada tahun 1602.",
+                   "Syarikat Hindia Timur Perancis ditubuhkan pada tahun 1664 untuk berdagang di Afrika.",
+                   "Kuasa Barat tertarik dengan kekayaan rantau ini dan mencari rempah, emas, perak, batu permata dan hasil hutan.",
+                   "Matlamat penjajahan mereka ialah kekayaan, keagamaan dan kemasyhuran (emas, agama dan kemasyhuran)."
+                 ]} } },
+        { kind:'think', time:'15 min',
+          body:{en:"Using the notebook's citations and the textbook, do three things: <b>(a)</b> find the ONE false claim and write the correct fact with its page number; <b>(b)</b> verify claim 2 is true and note the page; <b>(c)</b> verify claim 4 is true and note the page.",
+                bm:"Menggunakan petikan notebook dan buku teks, lakukan tiga perkara: <b>(a)</b> cari SATU dakwaan palsu dan tulis fakta yang betul dengan nombor muka suratnya; <b>(b)</b> sahkan dakwaan 2 adalah benar dan catat muka surat; <b>(c)</b> sahkan dakwaan 4 adalah benar dan catat muka surat."},
+          no:{en:["Repair a claim without opening the source page","Submit an answer with no page number"],bm:["Membaiki dakwaan tanpa membuka muka surat sumber","Hantar jawapan tanpa nombor muka surat"]} },
+        { kind:'handin', time:'3 min',
+          body:{en:"Hand in your worksheet: the false claim, its correction with page, and your two verified claims with pages.",bm:"Serah lembaran kerja anda: dakwaan palsu, pembetulannya dengan muka surat, dan dua dakwaan yang disahkan dengan muka surat."},
+          declare:{en:"AI used: I used NotebookLM to summarise and to open citations; finding and correcting the error is my own work.",bm:"AI digunakan: Saya guna NotebookLM untuk meringkas dan membuka petikan; mencari dan membetulkan ralat adalah kerja saya sendiri."} }
+      ],
+      
+    },
+
+    /* ===================== GEOGRAFI ===================== */
+    {
+      key:'geografi', accent:'var(--green)',
+      tab:{en:'Geografi',bm:'Geografi'}, tabSub:{en:'Ting. 5 · Graf',bm:'Ting. 5 · Graf'},
+      tag:{en:'Geografi Tingkatan 5 · Kemahiran Geografi',bm:'Geografi Tingkatan 5 · Kemahiran Geografi'},
+      title:{en:'Draw What the Notebook Won’t',bm:'Lukis Apa yang Notebook Enggan'},
+      meta:{en:'≈40 min · build & read a compound bar graph',bm:'≈40 min · bina & baca graf bar berganda'},
+      steps:[
+        { kind:'setup', time:'5 min',
+          body:{en:"Drawing a graph is a skill an AI cannot do for you. Today you build a compound bar graph from a data table on the board, then read it. NotebookLM can teach you the method, but it cannot draw your graph or invent numbers.",
+                bm:"Melukis graf ialah kemahiran yang AI tidak boleh buat untuk anda. Hari ini anda membina graf bar berganda daripada jadual data di papan, kemudian membacanya. NotebookLM boleh mengajar kaedah, tetapi tidak boleh melukis graf anda atau mencipta angka."} },
+        { kind:'useAI', time:'6 min',
+          body:{en:"Ask NotebookLM one method question, for example: 'How do I draw a compound bar graph, and how is it different from a simple bar graph?' Use the answer to set up your axes correctly.",
+                bm:"Tanya NotebookLM satu soalan kaedah, contohnya: 'Bagaimana saya melukis graf bar berganda, dan apa bezanya dengan graf bar mudah?' Gunakan jawapan itu untuk menyediakan paksi anda dengan betul."},
+          ok:{en:["Ask how to construct or read a compound bar graph"],bm:["Tanya cara membina atau membaca graf bar berganda"]},
+          no:{en:["Ask it to draw the graph","Ask it to invent or interpret the numbers for you"],bm:["Minta ia melukis graf","Minta ia mencipta atau mentafsir angka untuk anda"]} },
+        { kind:'material', time:'2 min',
+          body:{en:"Here is the data. It shows the share (%) of electricity by source in a state, in 2015 and 2023.",bm:"Inilah datanya. Ia menunjukkan bahagian (%) elektrik mengikut sumber di sebuah negeri, pada 2015 dan 2023."},
+          stim:{ h:{en:"Electricity by source (%) — 2015 vs 2023",bm:"Elektrik mengikut sumber (%) — 2015 lwn 2023"},
+                 table:{ head:{en:['Source','2015','2023'],bm:['Sumber','2015','2023']},
+                   rows:{en:[['Natural gas','50','40'],['Coal','30','25'],['Hydro','15','20'],['Solar','3','12'],['Other','2','3']],
+                         bm:[['Gas asli','50','40'],['Arang batu','30','25'],['Hidro','15','20'],['Solar','3','12'],['Lain-lain','2','3']]} } } },
+        { kind:'think', time:'22 min',
+          body:{en:"Draw ONE compound bar graph of this data, with a title, labelled axes and a key for the two years. Then answer: <b>(a)</b> which source rose the most from 2015 to 2023? <b>(b)</b> which source fell the most? <b>(c)</b> what % came from renewables (hydro + solar) in 2023? <b>(d)</b> one sentence: what trend does the graph show?",
+                bm:"Lukis SATU graf bar berganda bagi data ini, lengkap dengan tajuk, paksi berlabel dan petunjuk bagi dua tahun. Kemudian jawab: <b>(a)</b> sumber mana naik paling banyak dari 2015 ke 2023? <b>(b)</b> sumber mana turun paling banyak? <b>(c)</b> berapa % daripada sumber boleh diperbaharui (hidro + solar) pada 2023? <b>(d)</b> satu ayat: apakah trend yang ditunjukkan graf?"},
+          no:{en:["Ask the notebook to answer (a)–(d) from the table"],bm:["Minta notebook menjawab (a)–(d) daripada jadual"]} },
+        { kind:'handin', time:'5 min',
+          body:{en:"Hand in your graph and your four answers.",bm:"Serah graf anda dan empat jawapan anda."},
+          declare:{en:"AI used: NotebookLM explained how to draw a compound bar graph; the graph and answers are my own. — or — No AI was used.",bm:"AI digunakan: NotebookLM menerangkan cara melukis graf bar berganda; graf dan jawapan adalah kerja saya sendiri. — atau — Tiada AI digunakan."} }
+      ],
+      
+    },
+
+    /* ===================== SAINS ===================== */
+    {
+      key:'sains', accent:'var(--blue)',
+      tab:{en:'Sains',bm:'Sains'}, tabSub:{en:'Ting. 2 · Bab 5',bm:'Ting. 2 · Bab 5'},
+      tag:{en:'Sains Tingkatan 2 · Bab 5 Air dan Larutan',bm:'Sains Tingkatan 2 · Bab 5 Air dan Larutan'},
+      title:{en:'Plan the Fair Test',bm:'Rancang Ujian Adil'},
+      meta:{en:'≈40 min · design (not perform) a fair test',bm:'≈40 min · reka (bukan lakukan) ujian adil'},
+      steps:[
+        { kind:'setup', time:'5 min',
+          body:{en:"You will design an experiment in your book — no apparatus needed today. The AI can quiz you on the science and check your understanding of variables, but it cannot design your test for you.",
+                bm:"Anda akan mereka satu eksperimen dalam buku anda — tiada radas diperlukan hari ini. AI boleh menguji anda tentang sains dan menyemak kefahaman anda tentang pemboleh ubah, tetapi ia tidak boleh mereka ujian anda untuk anda."} },
+        { kind:'useAI', time:'8 min',
+          body:{en:"Ask NotebookLM to re-explain manipulated, responding and fixed (controlled) variables in simple Bahasa Melayu, and quiz yourself on <i>kadar keterlarutan</i> (rate of dissolving) from section 5.2.",
+                bm:"Minta NotebookLM menerangkan semula pemboleh ubah dimanipulasi, bergerak balas dan dimalarkan dalam Bahasa Melayu mudah, dan uji diri anda tentang <i>kadar keterlarutan</i> daripada bahagian 5.2."},
+          ok:{en:["Re-explain the three kinds of variable","Quiz yourself on the concept"],bm:["Terangkan semula tiga jenis pemboleh ubah","Uji diri tentang konsep"]},
+          no:{en:["Ask it to write your hypothesis or method","Ask it to give you the whole plan"],bm:["Minta ia menulis hipotesis atau kaedah anda","Minta ia memberi keseluruhan rancangan"]} },
+        { kind:'material', time:'2 min',
+          body:{en:"Here is the question to plan for.",bm:"Inilah soalan untuk dirancang."},
+          stim:{ h:{en:"The scenario",bm:"Senario"},
+                 p:{en:"Aina says sugar dissolves faster in hot water than in cold water. Plan a fair test to find out whether she is right.",bm:"Aina berkata gula melarut lebih cepat dalam air panas berbanding air sejuk. Rancang satu ujian adil untuk mengetahui sama ada dia betul."} } },
+        { kind:'think', time:'18 min',
+          body:{en:"In your book, write: a <b>hypothesis</b>; the <b>manipulated</b> and <b>responding</b> variables; <b>three</b> variables you keep fixed; a short <b>method</b>; your <b>predicted</b> result; and how you will measure 'faster'. Show anything you cross out and change — the planning is what is marked.",
+                bm:"Dalam buku anda, tulis: satu <b>hipotesis</b>; pemboleh ubah <b>dimanipulasi</b> dan <b>bergerak balas</b>; <b>tiga</b> pemboleh ubah yang dimalarkan; satu <b>kaedah</b> ringkas; keputusan yang <b>diramal</b>; dan cara anda mengukur 'lebih cepat'. Tunjukkan apa yang anda padam dan ubah — perancangan itulah yang dinilai."} },
+        { kind:'handin', time:'3 min',
+          body:{en:"Hand in your plan with its crossings-out.",bm:"Serah rancangan anda berserta coretannya."},
+          declare:{en:"AI used: NotebookLM re-explained the variables and quizzed me; the experiment design is my own.",bm:"AI digunakan: NotebookLM menerangkan semula pemboleh ubah dan menguji saya; reka bentuk eksperimen adalah kerja saya sendiri."} }
+      ],
+      
+    },
+
+    /* ===================== PENDIDIKAN ISLAM ===================== */
+    {
+      key:'islam', accent:'var(--purple)',
+      tab:{en:'P. Islam',bm:'P. Islam'}, tabSub:{en:'Ting. 1 · Akhlak',bm:'Ting. 1 · Akhlak'},
+      tag:{en:'Pendidikan Islam Tingkatan 1 · Akhlak (Ikhlas)',bm:'Pendidikan Islam Tingkatan 1 · Akhlak (Ikhlas)'},
+      title:{en:'Apply the Concept',bm:'Aplikasikan Konsep'},
+      meta:{en:'≈40 min · apply a value to a set scenario',bm:'≈40 min · aplikasikan nilai pada senario tetap',
+             },
+      steps:[
+        { kind:'setup', time:'5 min',
+          body:{en:"You will apply a value from the chapter — <i>ikhlas</i> (sincerity) — to a real school situation. The AI can explain the concept; judging the situation is your own work. (Teacher: map this to your exact pelajaran on akhlak.)",
+                bm:"Anda akan mengaplikasikan satu nilai daripada bab — <i>ikhlas</i> — kepada situasi sekolah sebenar. AI boleh menerangkan konsep; menilai situasi itu adalah kerja anda sendiri. (Guru: padankan dengan pelajaran akhlak anda yang tepat.)"} },
+        { kind:'useAI', time:'8 min',
+          body:{en:"Ask NotebookLM to explain <i>ikhlas</i> in simple Bahasa Melayu, and the difference between ikhlas and <i>riak</i> (showing off). Quiz yourself on one point.",
+                bm:"Minta NotebookLM menerangkan <i>ikhlas</i> dalam Bahasa Melayu mudah, dan perbezaan antara ikhlas dengan <i>riak</i>. Uji diri anda tentang satu perkara."},
+          ok:{en:["Re-explain the concept in simpler language or BM","Quiz yourself on the meaning"],bm:["Terangkan semula konsep dengan lebih mudah atau dalam BM","Uji diri tentang maksudnya"]},
+          no:{en:["Ask it to write your answer","Translate a full answer for the assessment"],bm:["Minta ia menulis jawapan anda","Terjemah keseluruhan jawapan untuk penilaian"]} },
+        { kind:'material', time:'2 min',
+          body:{en:"Here is the situation to think about.",bm:"Inilah situasi untuk difikirkan."},
+          stim:{ h:{en:"The situation",bm:"Situasi"},
+                 p:{en:"During a group project, Ali did most of the work but let the teacher believe everyone contributed equally — because he wanted to look good in front of the class.",bm:"Semasa satu projek berkumpulan, Ali melakukan sebahagian besar kerja tetapi membiarkan guru percaya semua orang menyumbang sama rata — kerana dia mahu kelihatan baik di hadapan kelas."} } },
+        { kind:'think', time:'18 min',
+          body:{en:"In two or three sentences of your own, explain how <i>ikhlas</i> applies to Ali's action, and describe what ikhlas would look like in his place. Then discuss with a partner.",
+                bm:"Dalam dua atau tiga ayat anda sendiri, terangkan bagaimana <i>ikhlas</i> berkaitan dengan tindakan Ali, dan huraikan bagaimana ikhlas sepatutnya dalam keadaannya. Kemudian bincang dengan rakan."} },
+        { kind:'handin', time:'3 min',
+          body:{en:"Hand in your answer, in your own words.",bm:"Serah jawapan anda, dalam perkataan anda sendiri."},
+          declare:{en:"AI used: NotebookLM re-explained 'ikhlas'; the answer is my own. — or — No AI was used.",bm:"AI digunakan: NotebookLM menerangkan semula 'ikhlas'; jawapan ini kerja saya sendiri. — atau — Tiada AI digunakan."} }
+      ],
+      
+    }
+  ];
+
+  let lang = 'en';
+  let cur = 0;      // current activity index
+  let shown = 1;    // number of steps revealed
+
+  function tx(o){ return (o && (o[lang] || o.en)) || ''; }
+
+  function setLang(l){
+    lang = l;
+    document.getElementById('btn-en').classList.toggle('active', l==='en');
+    document.getElementById('btn-bm').classList.toggle('active', l==='bm');
+    document.querySelectorAll('[data-en]').forEach(el=>{ el.textContent = el.dataset[l] || el.dataset.en; });
+    renderTabs(); renderActivity();
+  }
+
+  function renderTabs(){
+    const wrap = document.getElementById('tabs'); wrap.innerHTML='';
+    ACT.forEach((a,i)=>{
+      const b=document.createElement('button');
+      b.className='tab'+(i===cur?' active':'');
+      b.style.setProperty('--accent', a.accent);
+      b.innerHTML = tx(a.tab) + '<small>' + tx(a.tabSub) + '</small>';
+      b.onclick=()=>{ cur=i; shown=1; renderTabs(); renderActivity(); };
+      wrap.appendChild(b);
+    });
+  }
+
+  function stepTitle(kind){ return T[kind] ? tx(T[kind]) : ''; }
+
+  function chip(cols){
+    let h='<div class="use-cols">';
+    if(cols.ok) h+='<div class="use-col ok"><h4>'+tx(T.okH)+'</h4><ul>'+cols.ok[lang].map(x=>'<li>'+x+'</li>').join('')+'</ul></div>';
+    if(cols.no) h+='<div class="use-col no"><h4>'+tx(T.noH)+'</h4><ul>'+cols.no[lang].map(x=>'<li>'+x+'</li>').join('')+'</ul></div>';
+    return h+'</div>';
+  }
+
+  function stimHTML(s){
+    let h='<div class="stim"><div class="stim-label">'+tx(T.stimulus)+'</div>';
+    if(s.h) h+='<h5>'+tx(s.h)+'</h5>';
+    if(s.p) h+='<p>'+tx(s.p)+'</p>';
+    if(s.claims) h+='<ul class="claim-list">'+s.claims[lang].map(c=>'<li>'+c+'</li>').join('')+'</ul>';
+    if(s.table){ h+='<table class="data-table"><tr>'+s.table.head[lang].map(x=>'<th>'+x+'</th>').join('')+'</tr>'+
+      s.table.rows[lang].map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</table>'; }
+    return h+'</div>';
+  }
+
+  function renderActivity(){
+    const a = ACT[cur];
+    document.getElementById('a-tag').textContent = tx(a.tag);
+    document.getElementById('a-title').textContent = tx(a.title);
+    document.getElementById('a-meta').textContent = tx(a.meta);
+
+    // dots
+    const dots=document.getElementById('dots'); dots.innerHTML='';
+    a.steps.forEach((_,i)=>{ const d=document.createElement('div'); d.className='dot'+(i<shown?' done':''); d.style.setProperty('--accent', a.accent); dots.appendChild(d); });
+
+    // steps
+    const wrap=document.getElementById('steps'); wrap.innerHTML='';
+    for(let i=0;i<shown && i<a.steps.length;i++){
+      const s=a.steps[i];
+      const div=document.createElement('div'); div.className='step'; div.style.setProperty('--accent', a.accent);
+      let h='<div class="step-head"><span class="step-n">'+(i+1)+'</span><span class="step-title">'+stepTitle(s.kind)+'</span><span class="step-time">'+s.time+'</span></div>';
+      h+='<div class="step-body">'+tx(s.body)+'</div>';
+      if(s.ok||s.no) h+=chip({ok:s.ok,no:s.no});
+      if(s.stim) h+=stimHTML(s.stim);
+      if(s.declare) h+='<div class="declare-box"><div class="stim-label">'+tx(T.declaration)+'</div><p>"'+tx(s.declare)+'"</p></div>';
+      div.innerHTML=h; wrap.appendChild(div);
+    }
+
+    // reveal button
+    const btn=document.getElementById('reveal');
+    if(shown < a.steps.length){
+      const next=a.steps[shown];
+      btn.style.setProperty('--accent', a.accent);
+      btn.classList.remove('hidden');
+      btn.innerHTML = tx(T.reveal)+' ▾<small>'+(shown+1)+' / '+a.steps.length+' · '+stepTitle(next.kind)+'</small>';
+    } else {
+      btn.classList.add('hidden');
+    }
+
+
+  }
+
+  function revealNext(){
+    const a=ACT[cur];
+    if(shown < a.steps.length){ shown++; renderActivity();
+      requestAnimationFrame(()=>{ const els=document.querySelectorAll('.step'); if(els.length) els[els.length-1].scrollIntoView({behavior:'smooth', block:'center'}); });
+    }
+  }
+
+  function printPack(){
+    const a=ACT[cur]; shown=a.steps.length; renderActivity();
+    setTimeout(()=>window.print(), 60);
+  }
+
+  renderTabs(); renderActivity();
+</script>
+</body>
+</html>
