@@ -274,6 +274,7 @@
         <ul>
           <li data-en="Introduce this pack after Module 4, once the classroom protocol has been taught." data-bm="Perkenalkan pek ini selepas Modul 4, setelah protokol bilik darjah diajar.">Introduce this pack after Module 4, once the protocol has been taught.</li>
           <li data-en="Assignments 1–5 are formative; Assignment 6 (The Weighing) carries real weight." data-bm="Tugasan 1–5 bersifat formatif; Tugasan 6 (Timbangan) membawa wajaran sebenar.">Assignments 1–5 are formative; Assignment 6 carries real weight.</li>
+          <li data-en="For Assignment 6, write the summary yourself and plant one subtle error — a grounded tool rarely errs on a clean source, so students need a real error to catch." data-bm="Bagi Tugasan 6, tulis ringkasan itu sendiri dan tanam satu kesilapan halus — alat yang terikat pada sumber jarang tersilap pada sumber bersih, jadi murid memerlukan kesilapan sebenar untuk ditemui.">For Assignment 6, write the summary yourself and plant one subtle error for students to catch.</li>
           <li data-en="Do not use AI-detection software to accuse a student — ask them to explain their work instead." data-bm="Jangan guna perisian pengesan AI untuk menuduh murid — minta mereka menerangkan kerja mereka sebaliknya.">Do not use AI-detection software to accuse a student.</li>
         </ul>
         <button class="print-btn" onclick="printPack()" data-en="⎙ Print / Save the Pack" data-bm="⎙ Cetak / Simpan Pek">⎙ Print / Save the Pack</button>
@@ -300,60 +301,60 @@
       subject: 'sejarah', accent: 'var(--amber)',
       tag: { en: 'Sejarah Ting. 3 · Bab 1', bm: 'Sejarah Ting. 3 · Bab 1' },
       chapter: { en: 'Kedatangan Kuasa Barat', bm: 'Kedatangan Kuasa Barat' },
-      title: { en: "Catch the Notebook's Mistake", bm: 'Tangkap Kesilapan Notebook' },
+      title: { en: 'Rank the Causes, Defend the Order', bm: 'Susun Sebab, Pertahankan Aturan' },
       brief: {
-        en: "Upload Bab 1 'Kedatangan Kuasa Barat' to a private notebook and generate a one-paragraph summary. Your task is not the summary — it is to hunt it. Find one claim the summary states more strongly than the textbook does, quote the exact textbook sentence (with page number) it relies on, and rewrite the claim so it matches the source.",
-        bm: "Muat naik Bab 1 'Kedatangan Kuasa Barat' ke notebook peribadi dan jana ringkasan satu perenggan. Tugas anda bukan ringkasan itu — tetapi memburunya. Cari satu dakwaan yang dinyatakan lebih kuat daripada buku teks, petik ayat buku teks yang tepat (dengan nombor muka surat) yang menjadi sandarannya, dan tulis semula dakwaan itu supaya sepadan dengan sumber."
+        en: "Use NotebookLM to generate an accurate list of the factors that brought Western powers to the Malay states — that summary is your study starting point, and it will be reliable. Then do what the notebook cannot: choose the THREE most important factors, rank them, and write a short justification for your order, citing specific evidence (with page numbers) from the chapter. You will defend your ranking aloud, and a classmate may argue for a different order.",
+        bm: "Guna NotebookLM untuk menjana senarai tepat faktor yang membawa kuasa Barat ke Tanah Melayu — ringkasan itu titik permulaan kajian anda, dan ia memang boleh dipercayai. Kemudian lakukan apa yang notebook tidak boleh: pilih TIGA faktor terpenting, susunnya mengikut kepentingan, dan tulis justifikasi ringkas bagi aturan anda, dengan memetik bukti khusus (dengan nombor muka surat) daripada bab ini. Anda akan mempertahankan susunan anda secara lisan, dan rakan sekelas mungkin berhujah untuk aturan yang berbeza."
       },
       resist: {
-        en: "The notebook can write the summary, but it cannot do the checking — and the checking is the graded skill (Module 3).",
-        bm: "Notebook boleh menulis ringkasan, tetapi tidak boleh membuat semakan — dan semakan itulah kemahiran yang dinilai (Modul 3)."
+        en: "The notebook's summary of the factors is accurate — so accuracy is not the test. The test is your ranking and the argument for it, which the source never states and which you must hold under questioning.",
+        bm: "Ringkasan faktor oleh notebook memang tepat — jadi ketepatan bukan ujiannya. Ujiannya ialah susunan anda dan hujah untuknya, yang tidak dinyatakan dalam sumber dan yang mesti anda pertahankan ketika disoal."
       },
       ok: {
-        en: ["Generate a summary of the uploaded chapter", "Click each citation to land on the textbook page", "Generate practice questions to test yourself"],
-        bm: ["Jana ringkasan bab yang dimuat naik", "Klik setiap petikan untuk ke muka surat buku teks", "Jana soalan latihan untuk menguji diri"]
+        en: ["Generate a summary or list of the factors from the chapter", "Ask for a factor to be re-explained in simpler language or BM", "Generate practice questions to test yourself"],
+        bm: ["Jana ringkasan atau senarai faktor daripada bab ini", "Minta sesuatu faktor dijelaskan semula dengan lebih mudah atau dalam BM", "Jana soalan latihan untuk menguji diri"]
       },
       no: {
-        en: ["Submit the generated summary as your answer", "Repair a claim without opening the source"],
-        bm: ["Hantar ringkasan yang dijana sebagai jawapan", "Membaiki dakwaan tanpa membuka sumber"]
+        en: ["Ask the notebook to rank the factors or write your justification", "Submit the generated summary as your argument"],
+        bm: ["Minta notebook menyusun faktor atau menulis justifikasi anda", "Hantar ringkasan yang dijana sebagai hujah anda"]
       },
       deliver: {
-        en: "The generated summary, your marked-up correction, and the textbook page number behind it.",
-        bm: "Ringkasan yang dijana, pembetulan bertanda anda, dan nombor muka surat buku teks di sebaliknya."
+        en: "The notebook's factor list (cited), your ranked top three with a short justification for each, and the alternative order a classmate argued plus your reply.",
+        bm: "Senarai faktor daripada notebook (dengan petikan), tiga teratas anda yang disusun dengan justifikasi ringkas bagi setiap satu, dan aturan alternatif yang dihujahkan rakan sekelas berserta jawapan anda."
       },
       declare: {
-        en: "AI used: NotebookLM generated the summary I then checked and corrected; the corrections and citations are my own.",
-        bm: "AI digunakan: NotebookLM menjana ringkasan yang kemudian saya semak dan betulkan; pembetulan dan petikan adalah kerja saya sendiri."
+        en: "AI used: NotebookLM listed the factors from the chapter; the ranking, justification and defence are my own.",
+        bm: "AI digunakan: NotebookLM menyenaraikan faktor daripada bab ini; susunan, justifikasi dan pertahanan adalah kerja saya sendiri."
       }
     },
     {
       subject: 'geografi', accent: 'var(--green)',
       tag: { en: 'Geografi Ting. 5 · Kemahiran Geografi', bm: 'Geografi Ting. 5 · Kemahiran Geografi' },
-      chapter: { en: 'Graf Bar Berganda & Carta Pai', bm: 'Graf Bar Berganda & Carta Pai' },
-      title: { en: 'Data From Your Own Street', bm: 'Data Dari Jalan Anda Sendiri' },
+      chapter: { en: 'Graf Bar Berganda', bm: 'Graf Bar Berganda' },
+      title: { en: 'Traffic Count, Two Times of Day', bm: 'Kiraan Trafik, Dua Waktu' },
       brief: {
-        en: "Survey 10 households in your own taman or kampung on one question you choose (for example, how each household travels to school or work, or its main source of drinking water). Draw a compound bar graph and a pie chart of your results by hand, then write three sentences interpreting them.",
-        bm: "Tinjau 10 buah rumah di taman atau kampung anda sendiri tentang satu soalan pilihan anda (contohnya, cara setiap keluarga ke sekolah atau kerja, atau sumber utama air minum). Lukis graf bar berganda dan carta pai daripada keputusan anda secara manual, kemudian tulis tiga ayat mentafsirkannya."
+        en: "Standing safely near a road by your home, count the vehicles passing for 10 minutes — once in the morning and once in the evening — using five fixed categories: motorcycle, car, bus, lorry, other. Draw ONE compound bar graph (by hand) comparing the two times across the five categories, with a title, labelled axes and a key. Then answer three set questions: (a) which category changed the most between the two times, (b) the total vehicles at each time, and (c) one sentence on what the difference suggests about movement in your area.",
+        bm: "Sambil berdiri di tempat selamat berhampiran jalan dekat rumah anda, kira kenderaan yang lalu selama 10 minit — sekali pada waktu pagi dan sekali pada waktu petang — menggunakan lima kategori tetap: motosikal, kereta, bas, lori, lain-lain. Lukis SATU graf bar berganda (secara manual) membandingkan dua waktu itu merentas lima kategori, lengkap dengan tajuk, paksi berlabel dan petunjuk. Kemudian jawab tiga soalan yang ditetapkan: (a) kategori yang paling banyak berubah antara dua waktu, (b) jumlah kenderaan pada setiap waktu, dan (c) satu ayat tentang apa yang perbezaan itu menunjukkan mengenai pergerakan di kawasan anda."
       },
       resist: {
-        en: "No notebook holds your street's data, so both the numbers and the reading of them must be yours (design shift: your own context).",
-        bm: "Tiada notebook menyimpan data jalan anda, jadi kedua-dua angka dan tafsirannya mestilah milik anda (anjakan reka bentuk: konteks anda sendiri)."
+        en: "The numbers come from your own count, so no notebook can produce them — and drawing the graph is a hand skill the tool cannot sit for. The fixed categories and set questions make every student's work markable the same way.",
+        bm: "Angka datang daripada kiraan anda sendiri, jadi tiada notebook boleh menghasilkannya — dan melukis graf ialah kemahiran tangan yang tidak boleh digantikan oleh alat. Kategori tetap dan soalan yang ditetapkan menjadikan kerja setiap murid boleh dinilai dengan cara yang sama."
       },
       ok: {
-        en: ["Ask how to read or draw a compound bar graph or pie chart", "Ask for a technique re-explained in simpler language or BM"],
-        bm: ["Tanya cara membaca atau melukis graf bar berganda atau carta pai", "Minta sesuatu teknik dijelaskan semula dengan lebih mudah atau dalam BM"]
+        en: ["Ask NotebookLM how to construct or read a compound bar graph", "Ask for the difference between a bar graph and a compound bar graph"],
+        bm: ["Tanya NotebookLM cara membina atau membaca graf bar berganda", "Tanya perbezaan antara graf bar dan graf bar berganda"]
       },
       no: {
-        en: ["Ask the notebook to interpret your data", "Have the chart generated for you"],
-        bm: ["Minta notebook mentafsir data anda", "Minta carta dijana untuk anda"]
+        en: ["Ask the notebook to draw the graph or invent the counts", "Ask it to answer the three questions from your data"],
+        bm: ["Minta notebook melukis graf atau mencipta kiraan", "Minta ia menjawab tiga soalan daripada data anda"]
       },
       deliver: {
-        en: "Your raw tally, the hand-drawn graph and pie chart, and your three interpretation sentences.",
-        bm: "Jadual turus mentah anda, graf dan carta pai lukisan tangan, dan tiga ayat tafsiran anda."
+        en: "Your tally sheet for both times, the hand-drawn compound bar graph, and your answers to the three set questions.",
+        bm: "Helaian turus anda bagi kedua-dua waktu, graf bar berganda lukisan tangan, dan jawapan anda kepada tiga soalan yang ditetapkan."
       },
       declare: {
-        en: "AI used: I asked NotebookLM to explain how to read a pie chart; the data, charts and interpretation are my own.",
-        bm: "AI digunakan: Saya minta NotebookLM terangkan cara membaca carta pai; data, carta dan tafsiran adalah kerja saya sendiri."
+        en: "AI used: NotebookLM explained how to build a compound bar graph; the count, graph and answers are my own. — or — No AI was used.",
+        bm: "AI digunakan: NotebookLM menerangkan cara membina graf bar berganda; kiraan, graf dan jawapan adalah kerja saya sendiri. — atau — Tiada AI digunakan."
       }
     },
     {
@@ -452,12 +453,12 @@
       chapter: { en: 'A chapter you have already studied', bm: 'Bab yang telah anda pelajari' },
       title: { en: 'The Weighing: Use it Well, or Not at All', bm: 'Timbangan: Guna Dengan Betul, atau Tidak Langsung' },
       brief: {
-        en: "You are given a generated summary of a chapter you have studied. Identify one unsupported claim, verify two other claims against the textbook (with page numbers), and write two sentences stating exactly how you would — and would not — use this summary for an assignment.",
-        bm: "Anda diberi ringkasan yang dijana bagi bab yang telah anda pelajari. Kenal pasti satu dakwaan tidak disokong, sahkan dua dakwaan lain berdasarkan buku teks (dengan nombor muka surat), dan tulis dua ayat menyatakan dengan tepat bagaimana anda akan — dan tidak akan — menggunakan ringkasan ini untuk tugasan."
+        en: "Your teacher gives you a summary of a chapter you have studied — one the teacher has edited to plant a single subtle error (a claim the chapter does not support, or two separate ideas merged into one). Find the planted error and prove it wrong with the textbook page. Then verify two other claims against the textbook (with page numbers), and write two sentences stating exactly how you would — and would not — use a tool-made summary for an assignment.",
+        bm: "Guru anda memberi ringkasan bagi bab yang telah anda pelajari — satu yang telah disunting guru untuk menanam satu kesilapan halus (dakwaan yang tidak disokong bab, atau dua idea berasingan dicantum menjadi satu). Cari kesilapan yang ditanam itu dan buktikan ia salah dengan muka surat buku teks. Kemudian sahkan dua dakwaan lain berdasarkan buku teks (dengan nombor muka surat), dan tulis dua ayat menyatakan dengan tepat bagaimana anda akan — dan tidak akan — menggunakan ringkasan buatan alat untuk tugasan."
       },
       resist: {
-        en: "This is the whole protocol in one task — verification, citation and the integrity line together (the weighted end-of-programme assessment).",
-        bm: "Ini keseluruhan protokol dalam satu tugas — semakan, petikan dan garis integriti bersama-sama (penilaian akhir program yang berwajaran)."
+        en: "Because the teacher plants the error deliberately, there is a real answer to find — the task teaches verification honestly, without pretending a grounded tool routinely errs on a clean source. Verifying and judging are yours.",
+        bm: "Kerana guru menanam kesilapan itu dengan sengaja, ada jawapan sebenar untuk dicari — tugas ini mengajar semakan secara jujur, tanpa berpura-pura alat yang terikat pada sumber kerap tersilap pada sumber yang bersih. Semakan dan pertimbangan adalah kerja anda."
       },
       ok: {
         en: ["Open the citations to check them", "Generate practice questions on the chapter first"],
