@@ -1,0 +1,5 @@
+# This is a local media working folder. Track ONLY the workshop web app.
+*
+!.gitignore
+!index.html
+!classroom-protocol-quiz.html
